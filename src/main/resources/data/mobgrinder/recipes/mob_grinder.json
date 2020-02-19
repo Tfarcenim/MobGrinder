@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " d ",
+    "did",
+    " d "
+  ],
+  "key": {
+    "d": {
+      "item": "minecraft:diamond_sword"
+    },
+    "i": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "item": "mobgrinder:mob_grinder"
+  }
+}

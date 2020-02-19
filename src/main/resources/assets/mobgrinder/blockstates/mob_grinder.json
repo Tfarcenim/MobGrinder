@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "mobgrinder:block/mob_grinder" }
+  }
+}

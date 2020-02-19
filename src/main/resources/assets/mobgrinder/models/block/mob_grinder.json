@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "mobgrinder:block/mob_grinder"
+  }
+}
