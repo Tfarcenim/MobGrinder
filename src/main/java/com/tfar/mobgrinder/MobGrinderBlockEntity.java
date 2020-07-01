@@ -9,6 +9,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -49,10 +50,10 @@ public class MobGrinderBlockEntity extends TileEntity implements INamedContainer
 	static {
 		//entity.dropLoot(source,true);
 		droploot = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "func_213354_a",
-							DamageSource.class,boolean.class);
-			//entity.dropSpecialItems(source, i, true);
-			dropSpecialItems = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "func_213333_a",
-							DamageSource.class,int.class,boolean.class);
+						DamageSource.class, boolean.class);
+		//entity.dropSpecialItems(source, i, true);
+		dropSpecialItems = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "func_213333_a",
+						DamageSource.class, int.class, boolean.class);
 	}
 
 	public ItemStackHandler handler = new ItemStackHandler(2);
@@ -74,18 +75,17 @@ public class MobGrinderBlockEntity extends TileEntity implements INamedContainer
 	@Nullable
 	@Override
 	public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
-		return new MobGrinderMenu(p_createMenu_1_,p_createMenu_2_,world,pos);
+		return new MobGrinderMenu(p_createMenu_1_, p_createMenu_2_, world, pos);
 	}
 
 	@Override
 	public void tick() {
 		if (!world.isRemote) {
-			if (world.getWorldInfo().getGameTime() % 20 != 0)return;
+			if (world.getWorldInfo().getGameTime() % MobGrinderConfigs.ServerConfig.timeBetweenKills.get() != 0) return;
 			ItemStack holder = handler.getStackInSlot(0);
 			if (!holder.isEmpty()) {
-				if (holder.hasTag()) {
-					EntityType<?> entityType = Utils.getEntityTypeFromStack(holder);
-					if (entityType != null) {
+				if (holder.hasTag() && !storage.full()) {
+					Utils.getEntityTypeFromStack(holder).ifPresent(entityType -> {
 						LivingEntity entity = (LivingEntity) entityType.create(world);
 						if (entity instanceof MobEntity) {
 							((MobEntity) entity).onInitialSpawn(world, world.getDifficultyForLocation(pos)
@@ -96,7 +96,7 @@ public class MobGrinderBlockEntity extends TileEntity implements INamedContainer
 
 						DamageSource source = DamageSource.causePlayerDamage(fakePlayer);
 
-						ObfuscationReflectionHelper.setPrivateValue(LivingEntity.class,entity,fakePlayer,"field_70717_bb");
+						ObfuscationReflectionHelper.setPrivateValue(LivingEntity.class, entity, fakePlayer, "field_70717_bb");
 
 						entity.captureDrops(new java.util.ArrayList<>());
 						int i = net.minecraftforge.common.ForgeHooks.getLootingLevel(entity, fakePlayer, source);
@@ -107,7 +107,7 @@ public class MobGrinderBlockEntity extends TileEntity implements INamedContainer
 							//entity.dropSpecialItems(source, i, true);
 							dropSpecialItems.invoke(entity, source, i, true);
 						} catch (Exception e) {
-							e.printStackTrace();
+							throw new RuntimeException(e);
 						}
 
 						Collection<ItemEntity> mobDrops = entity.captureDrops(null);
@@ -117,7 +117,11 @@ public class MobGrinderBlockEntity extends TileEntity implements INamedContainer
 											.map(ItemEntity::getItem)
 											.forEach(stack -> storage.addItem(stack, false));
 						}
-					}
+						if (MobGrinderConfigs.ServerConfig.damagePerKill.get() > 0)
+							handler.getStackInSlot(1).damageItem(MobGrinderConfigs.ServerConfig.damagePerKill.get()
+											, fakePlayer, p -> {
+											});
+					});
 				}
 			}
 		}

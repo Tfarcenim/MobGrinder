@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class Utils {
 
@@ -19,17 +20,16 @@ public class Utils {
 		return stack.hasTag() && stack.getTag().contains(KEY);
 	}
 
-	public static EntityType<?> getEntityTypeFromNBT(CompoundNBT nbt) {
-		return Registry.ENTITY_TYPE.getOrDefault(new ResourceLocation(nbt.getString("id")));
+	public static Optional<EntityType<?>> getEntityTypeFromNBT(CompoundNBT nbt) {
+		return Registry.ENTITY_TYPE.getValue(new ResourceLocation(nbt.getString("id")));
 	}
 
-	public static EntityType<?> getEntityTypeFromStack(ItemStack stack) {
+	public static Optional<EntityType<?>> getEntityTypeFromStack(ItemStack stack) {
 		Item item = stack.getItem();
-		if (item == ExampleMod.net)
+		if (item == MobGrinder.net)
 		return getEntityTypeFromNBT(stack.getOrCreateTag().getCompound(KEY));
 		else
-			return Registry.ENTITY_TYPE.getOrDefault(
-							new ResourceLocation(stack.getOrCreateTag().getString("entity")));
+			return Registry.ENTITY_TYPE.getValue(new ResourceLocation(stack.getOrCreateTag().getString("entity")));
 	}
 
 	//unused

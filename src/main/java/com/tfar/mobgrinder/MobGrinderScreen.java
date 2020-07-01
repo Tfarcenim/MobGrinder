@@ -8,7 +8,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class MobGrinderScreen extends ContainerScreen<MobGrinderMenu> {
 
-	public static final ResourceLocation background = new ResourceLocation(ExampleMod.MODID,
+	public static final ResourceLocation background = new ResourceLocation(MobGrinder.MODID,
 					"textures/gui/mob_grinder.png");
 
 	public MobGrinderScreen(MobGrinderMenu screenContainer, PlayerInventory inv, ITextComponent titleIn) {
@@ -42,7 +42,7 @@ public class MobGrinderScreen extends ContainerScreen<MobGrinderMenu> {
 		int start = (this.xSize - size)/2;
 		this.font.drawString(this.title.getUnformattedComponentText(), start, 8, 0x404040);
 		if (!this.container.te.handler.getStackInSlot(0).isEmpty())
-		this.font.drawString(I18n.format(Utils.getEntityTypeFromStack(this.container.te.handler.getStackInSlot(0)).getTranslationKey())
+		this.font.drawString(I18n.format(Utils.getEntityTypeFromStack(this.container.te.handler.getStackInSlot(0)).get().getTranslationKey())
 						, start + 27, 73, 0x404040);
 
 	}

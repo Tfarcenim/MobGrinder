@@ -26,6 +26,10 @@ public class NoInsertIItemHandler extends ItemStackHandler {
 		return rem;
 	}
 
+	public boolean full(){
+		return stacks.stream().noneMatch(ItemStack::isEmpty);
+	}
+
 	@Nonnull
 	public ItemStack addItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 		if (stack.isEmpty())

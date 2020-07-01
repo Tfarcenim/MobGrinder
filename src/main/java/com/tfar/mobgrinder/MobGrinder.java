@@ -1,8 +1,5 @@
 package com.tfar.mobgrinder;
 
-import com.tfar.mobgrinder.capability.CapabilityEntityHolder;
-import com.tfar.mobgrinder.capability.EntityTypeHolder;
-import com.tfar.mobgrinder.capability.ItemStackEntityHolder;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,7 +11,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -25,18 +24,22 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static com.tfar.mobgrinder.MobGrinderConfigs.SERVER_SPEC;
+
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(ExampleMod.MODID)
-public class ExampleMod {
+@Mod(MobGrinder.MODID)
+public class MobGrinder {
 	// Directly reference a log4j logger.
 
 	public static final String MODID = "mobgrinder";
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public ExampleMod() {
+	public MobGrinder() {
 		IEventBus iEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_SPEC);
 		// Register the setup method for modloading
 		iEventBus.addListener(this::setup);
 		// Register the doClientStuff method for modloading
@@ -52,28 +55,7 @@ public class ExampleMod {
 	@ObjectHolder("industrialforegoing:mob_imprisonment_tool")
 	public static Item imprisonment_tool;
 
-	@SubscribeEvent
-	public void attachCapabilities(AttachCapabilitiesEvent<ItemStack> evt) {
-		ItemStack stack = evt.getObject();
-		Item item = stack.getItem();
-
-		if (item == net) {
-			ItemStackEntityHolder itemStackEntityHolder = ItemStackEntityHolder.create(stack);
-			evt.addCapability(new ResourceLocation(MODID,"entity_holder"), new ICapabilityProvider() {
-				LazyOptional<EntityTypeHolder> holderLazyOptional = LazyOptional.of(() -> itemStackEntityHolder);
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap,
-																								 @Nullable Direction side) {
-					return CapabilityEntityHolder.ENTITY_TYPE_HOLDER_CAPABILITY.orEmpty(cap, holderLazyOptional);
-				}
-			});
-		}
-	}
-
 	private void setup(final FMLCommonSetupEvent event) {
-		CapabilityEntityHolder.register();
 		//MinecraftForge.EVENT_BUS.register(this);
 	}
 

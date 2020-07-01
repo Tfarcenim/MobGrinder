@@ -15,10 +15,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class RegistryObjects {
 
 	public static final String name = "mob_grinder";
-	public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS,ExampleMod.MODID);
-	public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS,ExampleMod.MODID);
-	public static final DeferredRegister<ContainerType<?>> MENUS = new DeferredRegister<>(ForgeRegistries.CONTAINERS,ExampleMod.MODID);
-	public static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES,ExampleMod.MODID);
+	public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MobGrinder.MODID);
+	public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MobGrinder.MODID);
+	public static final DeferredRegister<ContainerType<?>> MENUS = new DeferredRegister<>(ForgeRegistries.CONTAINERS, MobGrinder.MODID);
+	public static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, MobGrinder.MODID);
 
 	public static final RegistryObject<Block> mob_grinder = BLOCKS.register(name, () -> new MobGrinderBlock(Block.Properties.from(Blocks.IRON_BLOCK)));
 	public static final RegistryObject<Item> mob_grinder_item = ITEMS.register(name, () -> new BlockItem(mob_grinder.get(),new Item.Properties().group(ItemGroup.COMBAT)));
